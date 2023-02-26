@@ -14,7 +14,9 @@ op.add_argument('--headless')
 op.add_argument('--no-sandbox')
 driver = webdriver.Chrome(options=op)
 
-auth.do_auth(driver)
+if not auth.do_auth(driver):
+    print('Przerwa techniczna')
+    exit()
 
 courses = ['6430-00000-000-0025', '6430-00000-000-0007']
 

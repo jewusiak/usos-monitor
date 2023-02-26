@@ -50,6 +50,9 @@ def do_auth(driver):
     session_cookie = read_session_data()
     driver.get("https://usosweb.usos.pw.edu.pl/kontroler.php?_action=news/default")
 
+    if "Przepraszamy, trwa przerwa techniczna." in driver.find_element(By.XPATH, '//*[@id="uwb-main-column"]/div/div/table/tbody/tr/td/div').text:
+        return False
+
     if not session_cookie == None:
         print('próba odtworzenia sesji...')
         driver.delete_all_cookies()
@@ -73,3 +76,4 @@ def do_auth(driver):
         print('nowa sesja - zalogowano')
     else:
         print('odtworzono sesję - zalogowano')
+    return True
