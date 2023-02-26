@@ -1,9 +1,9 @@
+import datetime
 import email
 import smtplib
 import ssl
-import datetime
 
-import credentials
+import config
 
 
 def send_email(places):
@@ -30,13 +30,13 @@ def send_email(places):
 
     message["Subject"] = "Nowe miejsca na WF"
 
-    message["From"] = credentials.mail_from
-    message["To"] = credentials.mail_to_address
+    message["From"] = config.mail_from
+    message["To"] = config.mail_to_address
     html = f"<html><body>{body}</body></html>"
     message.set_content(html, subtype='html')
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(credentials.mail_smtp_address, credentials.mail_smtp_port, context=context) as server:
-        server.login(credentials.mail_login, credentials.mail_password)
+    with smtplib.SMTP_SSL(config.mail_smtp_address, config.mail_smtp_port, context=context) as server:
+        server.login(config.mail_login, config.mail_password)
         server.send_message(message)
     print("Wysłano o {}".format(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")))

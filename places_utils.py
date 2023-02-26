@@ -1,7 +1,6 @@
 #
 #  Copyright (c) 2023 Grzegorz Jewusiak - jewusiak.pl
 #
-import copy
 import datetime
 import json
 import os
@@ -9,12 +8,14 @@ import os
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
 
+import config
 
-def get_available_places(driver: webdriver, courses):
+
+def get_available_places(driver: webdriver):
     avails = []
-    for subject in courses:
+    for subject in config.courses:
         driver.get(
-            f"https://usosweb.usos.pw.edu.pl/kontroler.php?_action=dla_stud/rejestracja/brdg2/grupyPrzedmiotu&rej_kod=6430-WFS-2023L&prz_kod={subject}&cdyd_kod=2023L&odczyt=1")
+            f"https://{config.usos_domain}/kontroler.php?_action=dla_stud/rejestracja/brdg2/grupyPrzedmiotu&rej_kod={config.registration_id}&prz_kod={subject}&cdyd_kod={config.semester}&odczyt=1")
         subject_name = driver.find_element(By.XPATH, f"//span[contains(text(), '{subject}')]").text
         rows = driver.find_elements(By.XPATH, "//tr[position()>2 and not(contains(@style,'font-weight: bold;'))]")
         for row in rows:
@@ -49,6 +50,6 @@ def process_places(old, new):
             if old_group['internal_id'] == new_group['internal_id']:
                 exists = True
                 new_group['diff'] = new_group['max'] - new_group['registered'] - (
-                            old_group['max'] - old_group['registered'])  # diff > 0 new empty places
+                        old_group['max'] - old_group['registered'])  # diff > 0 new empty places
                 break
         new_group['status'] = 'old' if exists else 'new'
